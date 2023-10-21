@@ -7,6 +7,7 @@ import (
 	"github.com/abdivasiyev/telegram-bot/internal/handler"
 	"github.com/abdivasiyev/telegram-bot/internal/repo"
 	"github.com/abdivasiyev/telegram-bot/internal/server"
+	"github.com/abdivasiyev/telegram-bot/internal/service"
 )
 
 var Module = fx.Options(
@@ -14,4 +15,5 @@ var Module = fx.Options(
 	repo.Module,
 	handler.Module,
 	server.Module,
+	service.Module,
 )

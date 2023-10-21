@@ -8,13 +8,15 @@ import (
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 
-	"github.com/abdivasiyev/telegram-bot/internal/handler/rest/user"
+	mBot "github.com/abdivasiyev/telegram-bot/internal/handler/middleware/bot"
+	"github.com/abdivasiyev/telegram-bot/internal/handler/rest/bot"
+
 	"github.com/abdivasiyev/telegram-bot/pkg/config"
 )
 
 func New(p Params) {
-	p.Router.Route("/user", func(r chi.Router) {
-		r.Get("/", p.User.Create)
+	p.Router.Route("/webhook/{token}", func(r chi.Router) {
+		r.With(p.BotMiddleware.Validate).Post("/", p.Bot.Webhook)
 	})
 
 	s := &http.Server{
@@ -37,8 +39,9 @@ var Module = fx.Options(fx.Invoke(New))
 
 type Params struct {
 	fx.In
-	Lifecycle fx.Lifecycle
-	Config    config.Config
-	Router    chi.Router
-	User      user.Handler
+	Lifecycle     fx.Lifecycle
+	Config        config.Config
+	Router        chi.Router
+	Bot           bot.Handler
+	BotMiddleware mBot.Handler
 }

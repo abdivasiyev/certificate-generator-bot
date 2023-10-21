@@ -16,7 +16,7 @@ type Viper struct {
 func New() *Viper {
 	v := &Viper{viper.New()}
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.SetConfigName("dev")
+	v.SetConfigName("app")
 	v.SetConfigType("yaml")
 	v.AddConfigPath(rootDir() + "/config")
 	if err := v.ReadInConfig(); err != nil {

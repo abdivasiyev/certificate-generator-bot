@@ -3,7 +3,11 @@ package handler
 import (
 	"go.uber.org/fx"
 
+	"github.com/abdivasiyev/telegram-bot/internal/handler/middleware"
 	"github.com/abdivasiyev/telegram-bot/internal/handler/rest"
 )
 
-var Module = fx.Options(rest.Module)
+var Module = fx.Options(
+	rest.Module,
+	middleware.Module,
+)

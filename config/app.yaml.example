@@ -1,0 +1,9 @@
+server:
+  port: 8080
+postgres:
+  url: "host=localhost port=5432 user=postgres dbname=telegram_bot password=postgres sslmode=disable"
+webhook:
+  url: "https://ngrok-generated.url"
+  secret: "generated secret token"
+bot:
+  token: bot_token_from_botfather
