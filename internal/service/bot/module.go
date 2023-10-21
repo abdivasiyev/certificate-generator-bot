@@ -24,7 +24,6 @@ func New(p Params) Service {
 	s := &service{
 		logger: p.Logger,
 		httpClient: req.NewClient().
-			DevMode().
 			SetCommonPathParam("token", p.Config.GetString("bot.token")).
 			SetBaseURL("https://api.telegram.org").
 			SetCommonHeader("Content-Type", "application/json"),

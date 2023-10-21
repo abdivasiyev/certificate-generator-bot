@@ -1,22 +1,48 @@
 package bot
 
-import "context"
+import (
+	"context"
+	"strings"
+)
 
 func (s *service) Handle(ctx context.Context, update Update) error {
 	s.logger.Debug().Any("update from telegram", update).Send()
 
-	msg, err := s.sendMessage(ctx, SendMessage{
-		ChatID:    update.Message.Chat.ID,
-		Text:      update.Message.Text,
-		ParseMode: "html",
-	})
-
-	if err != nil {
-		s.logger.Error().Err(err).Msg("failed to send message")
+	if err := s.handleTextCommands(ctx, update); err != nil {
+		s.logger.Error().Err(err).Msg("failed to handle text command")
 		return err
 	}
 
-	s.logger.Debug().Any("message", msg).Send()
+	if err := s.handleCallbackCommands(ctx, update); err != nil {
+		s.logger.Error().Err(err).Msg("failed to handle text command")
+		return err
+	}
 
 	return nil
+}
+
+func (s *service) handleCallbackCommands(ctx context.Context, update Update) error {
+	if update.CallbackQuery == nil {
+		return nil
+	}
+
+	switch strings.TrimSpace(update.CallbackQuery.Data) {
+	case "/start_test":
+		return s.handleStartTest(ctx, update.CallbackQuery)
+	default:
+		return s.handleUnknown(ctx, update)
+	}
+}
+
+func (s *service) handleTextCommands(ctx context.Context, update Update) error {
+	if update.Message == nil {
+		return nil
+	}
+
+	switch strings.TrimSpace(update.Message.Text) {
+	case "/start":
+		return s.handleStart(ctx, update.Message)
+	default:
+		return s.handleUnknown(ctx, update)
+	}
 }

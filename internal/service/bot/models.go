@@ -8,13 +8,37 @@ const (
 )
 
 type (
+	EditReplyMarkup struct {
+		ChatID      int64     `json:"chat_id"`
+		MessageID   int64     `json:"message_id"`
+		ReplyMarkup *Keyboard `json:"reply_markup,omitempty"` // create with generic for *KeyboardMarkup types
+	}
+
+	EditMessage struct {
+		ChatID      int64     `json:"chat_id"`
+		MessageID   int64     `json:"message_id"`
+		Text        string    `json:"text"`
+		ParseMode   string    `json:"parse_mode,omitempty"`
+		ReplyMarkup *Keyboard `json:"reply_markup,omitempty"` // create with generic for *KeyboardMarkup types
+	}
+
+	InlineKeyboardButton struct {
+		Text         string `json:"text"`
+		URL          string `json:"url,omitempty"`
+		CallbackData string `json:"callback_data,omitempty"`
+	}
+
+	Keyboard struct {
+		InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard,omitempty"`
+	}
+
 	SendMessage struct {
-		ChatID                   int64  `json:"chat_id"`
-		Text                     string `json:"text"`
-		ParseMode                string `json:"parse_mode,omitempty"`
-		ReplyToMessageID         int64  `json:"reply_to_message_id,omitempty"`
-		AllowSendingWithoutReply bool   `json:"allow_sending_without_reply,omitempty"`
-		ReplyMarkup              any    `json:"reply_markup,omitempty"` // create with generic for *KeyboardMarkup types
+		ChatID                   int64     `json:"chat_id"`
+		Text                     string    `json:"text"`
+		ParseMode                string    `json:"parse_mode,omitempty"`
+		ReplyToMessageID         int64     `json:"reply_to_message_id,omitempty"`
+		AllowSendingWithoutReply bool      `json:"allow_sending_without_reply,omitempty"`
+		ReplyMarkup              *Keyboard `json:"reply_markup,omitempty"` // create with generic for *KeyboardMarkup types
 	}
 
 	DeleteWebhook struct {
