@@ -17,6 +17,9 @@ func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("username").Unique().MinLen(5),
 		field.Int64("telegram_id").Unique(),
+
+		field.Int64("quiz_id").Default(0).NonNegative(),
+
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Optional().UpdateDefault(time.Now),
 	}

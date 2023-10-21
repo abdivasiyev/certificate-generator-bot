@@ -10,14 +10,16 @@ import (
 
 	"github.com/abdivasiyev/telegram-bot/internal/ent/store"
 	"github.com/abdivasiyev/telegram-bot/pkg/config"
+	"github.com/abdivasiyev/telegram-bot/pkg/logger/zerolog"
 )
 
-var Module = fx.Provide(New)
+var Module = fx.Invoke(New)
 
 type Params struct {
 	fx.In
 	Lifecycle fx.Lifecycle
 	Config    config.Config
+	Logger    *zerolog.Logger
 }
 
 func New(p Params) (*store.Client, error) {
@@ -30,7 +32,13 @@ func New(p Params) (*store.Client, error) {
 
 	p.Lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			return client.Schema.Create(ctx)
+			p.Logger.Info().Msg("running schema migration on startup")
+			if err = client.Schema.Create(ctx); err != nil {
+				p.Logger.Error().Err(err).Msg("failed to create schema")
+				return err
+			}
+
+			return nil
 		},
 		OnStop: func(ctx context.Context) error {
 			return client.Close()

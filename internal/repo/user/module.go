@@ -6,12 +6,26 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/abdivasiyev/telegram-bot/internal/ent/store"
+	"github.com/abdivasiyev/telegram-bot/internal/ent/store/user"
 )
 
-func (r *repo) Create(ctx context.Context) error {
+func (r *repo) Update(ctx context.Context, req UpdateUser) error {
+	_, err := r.client.User.Update().
+		SetQuizID(req.QuizID).
+		Where(user.TelegramID(req.TelegramID)).
+		Save(ctx)
+	return err
+}
+
+func (r *repo) Get(ctx context.Context, telegramID int64) (*store.User, error) {
+	return r.client.User.Query().
+		Where(user.TelegramID(telegramID)).First(ctx)
+}
+
+func (r *repo) Create(ctx context.Context, req CreateUser) error {
 	_, err := r.client.User.Create().
-		SetUsername("abdivasiyev").
-		SetTelegramID(1).
+		SetUsername(req.Username).
+		SetTelegramID(req.TelegramID).
 		Save(ctx)
 	return err
 }
@@ -22,10 +36,22 @@ func New(client *store.Client) Repo {
 	return &repo{client: client}
 }
 
-type repo struct {
-	client *store.Client
-}
+type (
+	UpdateUser struct {
+		TelegramID int64
+		QuizID     int64
+	}
 
-type Repo interface {
-	Create(ctx context.Context) error
-}
+	CreateUser struct {
+		Username   string
+		TelegramID int64
+	}
+
+	repo struct {
+		client *store.Client
+	}
+
+	Repo interface {
+		Get(ctx context.Context, telegramID int64) (*store.User, error)
+	}
+)
