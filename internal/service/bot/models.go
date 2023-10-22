@@ -8,6 +8,15 @@ const (
 )
 
 type (
+	SendPhoto struct {
+		ChatID           string    `json:"chat_id"`
+		Photo            string    `json:"photo"`
+		Caption          string    `json:"caption,omitempty"`
+		ParseMode        string    `json:"parse_mode,omitempty"`
+		ReplyToMessageID int64     `json:"reply_to_message_id,omitempty"`
+		ReplyMarkup      *Keyboard `json:"reply_markup,omitempty"` // create with generic for *KeyboardMarkup types
+	}
+
 	EditReplyMarkup struct {
 		ChatID      int64     `json:"chat_id"`
 		MessageID   int64     `json:"message_id"`

@@ -31,6 +31,8 @@ func (s *service) handleCallbackCommands(ctx context.Context, update Update) err
 		return s.handleStartTest(ctx, update.CallbackQuery)
 	case "/option_a", "/option_b", "/option_c", "/option_d":
 		return s.handleTestOption(ctx, update.CallbackQuery)
+	case "/generate_certificate":
+		return s.handleGenerateCertificate(ctx, update.CallbackQuery)
 	default:
 		return s.handleUnknown(ctx, update)
 	}

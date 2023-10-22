@@ -28,3 +28,28 @@ func sendRequest[T any](ctx context.Context,
 
 	return response, nil
 }
+
+func sendFile[T any](ctx context.Context,
+	client *req.Client,
+	action string,
+	params map[string]any,
+	fileParam string,
+	filePath string,
+) (Response[T], error) {
+	var response Response[T]
+
+	r := client.Post("/bot{token}"+action).
+		SetFormDataAnyType(params).
+		SetFile(fileParam, filePath).
+		Do(ctx)
+
+	if r == nil {
+		return response, fmt.Errorf("sendFile: %w", ErrTelegramRequest)
+	}
+
+	if err := r.Unmarshal(&response); err != nil {
+		return response, fmt.Errorf("sendFile: %w", err)
+	}
+
+	return response, nil
+}

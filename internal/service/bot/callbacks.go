@@ -3,11 +3,48 @@ package bot
 import (
 	"context"
 	"fmt"
+	"image/jpeg"
 	"strings"
+
+	"github.com/fogleman/gg"
 
 	"github.com/abdivasiyev/telegram-bot/internal/ent/store"
 	"github.com/abdivasiyev/telegram-bot/internal/repo/user"
+	"github.com/abdivasiyev/telegram-bot/pkg/certificator"
 )
+
+func (s *service) handleGenerateCertificate(ctx context.Context, callback *CallbackQuery) error {
+	img, err := certificator.GetCertificate(certificator.Request{
+		BgImgPath: "./static/images/certificate.jpeg",
+		FontPath:  "./static/fonts/SometypeMono-Bold.ttf",
+		FontSize:  36,
+		Text:      strings.TrimSpace(fmt.Sprintf("%s %s", callback.Message.Chat.FirstName, callback.Message.Chat.LastName)),
+	})
+
+	if err != nil {
+		return fmt.Errorf("handleGenerateCertificate: %w", err)
+	}
+
+	filePath := fmt.Sprintf("./static/gen/certificate_%d.jpeg", callback.Message.Chat.ID)
+
+	if err = gg.SaveJPG(filePath, img, jpeg.DefaultQuality); err != nil {
+		panic(err)
+	}
+
+	_, err = s.sendPhoto(ctx, SendPhoto{
+		ChatID:    fmt.Sprintf("%d", callback.Message.Chat.ID),
+		Caption:   "Sizning sertifikatingiz",
+		Photo:     filePath,
+		ParseMode: "html",
+	})
+
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to send message")
+		return err
+	}
+
+	return nil
+}
 
 func (s *service) handleTestOption(ctx context.Context, callback *CallbackQuery) error {
 	var currentQuizID = 1
@@ -25,7 +62,6 @@ func (s *service) handleTestOption(ctx context.Context, callback *CallbackQuery)
 		return fmt.Errorf("handleStartTest: %w", err)
 	}
 
-	// TODO: check question is correct or not
 	if strings.TrimLeft(strings.TrimSpace(callback.Data), "/option_") == q.CorrectOption {
 		u.CorrectQuiz++
 	} else {
