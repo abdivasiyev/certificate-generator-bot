@@ -22,6 +22,8 @@ func (Quiz) Fields() []ent.Field {
 		field.Text("option_c").NotEmpty(),
 		field.Text("option_d").NotEmpty(),
 
+		field.String("correct_option").Default("a").NotEmpty(),
+
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Optional().UpdateDefault(time.Now),
 	}

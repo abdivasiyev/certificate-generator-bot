@@ -13,6 +13,8 @@ import (
 func (r *repo) Update(ctx context.Context, req UpdateUser) error {
 	_, err := r.client.User.Update().
 		SetQuizID(req.QuizID).
+		SetIncorrectQuiz(req.Incorrects).
+		SetCorrectQuiz(req.Corrects).
 		Where(user.TelegramID(req.TelegramID)).
 		Save(ctx)
 	return err
@@ -52,6 +54,8 @@ type (
 	UpdateUser struct {
 		TelegramID int64
 		QuizID     int64
+		Incorrects int64
+		Corrects   int64
 	}
 
 	CreateUser struct {
