@@ -8,6 +8,8 @@ import (
 
 	"github.com/imroc/req/v3"
 
+	"github.com/abdivasiyev/telegram-bot/internal/repo/quiz"
+	"github.com/abdivasiyev/telegram-bot/internal/repo/user"
 	"github.com/abdivasiyev/telegram-bot/pkg/config"
 	"github.com/abdivasiyev/telegram-bot/pkg/logger/zerolog"
 )
@@ -30,6 +32,8 @@ func New(p Params) Service {
 		webhookURL:    p.Config.GetString("webhook.url"),
 		webhookSecret: p.Config.GetString("webhook.secret"),
 		botToken:      p.Config.GetString("bot.token"),
+		userRepo:      p.UserRepo,
+		quizRepo:      p.QuizRepo,
 	}
 
 	p.Lifecycle.Append(fx.Hook{
@@ -47,6 +51,8 @@ type (
 		Lifecycle fx.Lifecycle
 		Config    config.Config
 		Logger    *zerolog.Logger
+		UserRepo  user.Repo
+		QuizRepo  quiz.Repo
 	}
 
 	service struct {
@@ -55,6 +61,8 @@ type (
 		webhookSecret string
 		botToken      string
 		httpClient    *req.Client
+		userRepo      user.Repo
+		quizRepo      quiz.Repo
 	}
 
 	Service interface {

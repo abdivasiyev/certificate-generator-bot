@@ -13,7 +13,10 @@ import (
 	"github.com/abdivasiyev/telegram-bot/pkg/logger/zerolog"
 )
 
-var Module = fx.Invoke(New)
+var Module = fx.Options(
+	fx.Provide(New),
+	fx.Invoke(New),
+)
 
 type Params struct {
 	fx.In

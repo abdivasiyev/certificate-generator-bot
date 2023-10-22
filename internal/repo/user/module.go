@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 
 	"go.uber.org/fx"
 
@@ -18,19 +19,30 @@ func (r *repo) Update(ctx context.Context, req UpdateUser) error {
 }
 
 func (r *repo) Get(ctx context.Context, telegramID int64) (*store.User, error) {
-	return r.client.User.Query().
+	u, err := r.client.User.Query().
 		Where(user.TelegramID(telegramID)).First(ctx)
+
+	if store.IsNotFound(err) {
+		return nil, ErrUserNotFound
+	}
+
+	return u, nil
 }
 
-func (r *repo) Create(ctx context.Context, req CreateUser) error {
-	_, err := r.client.User.Create().
+func (r *repo) Create(ctx context.Context, req CreateUser) (*store.User, error) {
+	u, err := r.client.User.Create().
 		SetUsername(req.Username).
 		SetTelegramID(req.TelegramID).
+		SetQuizID(1).
 		Save(ctx)
-	return err
+	return u, err
 }
 
-var Module = fx.Provide(New)
+var (
+	Module = fx.Provide(New)
+
+	ErrUserNotFound = errors.New("user not found")
+)
 
 func New(client *store.Client) Repo {
 	return &repo{client: client}
@@ -53,5 +65,7 @@ type (
 
 	Repo interface {
 		Get(ctx context.Context, telegramID int64) (*store.User, error)
+		Create(ctx context.Context, req CreateUser) (*store.User, error)
+		Update(ctx context.Context, req UpdateUser) error
 	}
 )
