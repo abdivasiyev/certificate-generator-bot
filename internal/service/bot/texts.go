@@ -14,12 +14,13 @@ Testni davom ettirish uchun quyidagi tugmani bosing!
 👇👇👇👇👇👇👇👇👇`
 
 	quizText = `%quiz_id%. %quiz_question%
-<pre>A. %option_a%</pre>
-<pre>B. %option_b%</pre>
-<pre>C. %option_c%</pre>
-<pre>D. %option_d%</pre>`
+
+<pre><b>A.</b> %option_a%</pre>
+<pre><b>B.</b> %option_b%</pre>
+<pre><b>C.</b> %option_c%</pre>
+<pre><b>D.</b> %option_d%</pre>`
 
 	quizEndText = `Tabriklaymiz, siz barcha savollarni muvaffaqiyatli tugatdingiz!
-Tog'ri javoblar soni: <pre>%corrects%</pre>
-Noto'g'ri javoblar soni: <pre>%incorrects%</pre>`
+<b>Tog'ri javoblar soni:</b> <pre>%corrects%</pre>
+<b>Noto'g'ri javoblar soni:</b> <pre>%incorrects%</pre>`
 )

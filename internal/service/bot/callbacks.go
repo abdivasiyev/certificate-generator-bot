@@ -57,7 +57,7 @@ func (s *service) handleTestOption(ctx context.Context, callback *CallbackQuery)
 				InlineKeyboard: [][]InlineKeyboardButton{
 					{
 						{
-							Text:         "Sertifikatni qabul qilib olish",
+							Text:         "Sertifikatni qabul qilib olish 📝",
 							CallbackData: "/generate_certificate",
 						},
 					},
