@@ -15,12 +15,12 @@ type Quiz struct {
 // Fields of the Quiz.
 func (Quiz) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("question").NotEmpty(),
+		field.Text("question").NotEmpty(),
 		field.Int64("next_quiz_id").NonNegative(),
-		field.String("option_a").NotEmpty(),
-		field.String("option_b").NotEmpty(),
-		field.String("option_c").NotEmpty(),
-		field.String("option_d").NotEmpty(),
+		field.Text("option_a").NotEmpty(),
+		field.Text("option_b").NotEmpty(),
+		field.Text("option_c").NotEmpty(),
+		field.Text("option_d").NotEmpty(),
 
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Optional().UpdateDefault(time.Now),
